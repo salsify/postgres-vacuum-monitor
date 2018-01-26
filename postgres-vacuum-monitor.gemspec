@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.name          = 'postgres-vacuum-monitor'
   spec.version       = Postgres::Vacuum::Monitor::VERSION
   spec.authors       = ['Fernando Garces']
-  spec.email         = ['fergarcesf@gmail.com']
+  spec.email         = ['fgarces@salsify.com']
 
   spec.summary       = 'Simple stats collector for postgres auto vacuumer.'
   spec.description   = 'Queries the Active Record DB for information regarding the auto vacuum process and long running queries'
