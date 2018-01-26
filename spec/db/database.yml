@@ -1,0 +1,5 @@
+test:
+  adapter: postgresql
+  encoding: unicode
+  database: postgres_vacuum_monitor_test
+  pool: 5
