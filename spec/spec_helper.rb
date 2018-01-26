@@ -22,8 +22,6 @@ RSpec.configure do |config|
     puts "Testing with Postgres version: #{pg_version}"
     puts "Testing with ActiveRecord #{ActiveRecord::VERSION::STRING}"
 
-    `dropdb --if-exists #{DATABASE_NAME} 2> /dev/null`
-    `createdb #{DATABASE_NAME}`
     ActiveRecord::Base.establish_connection(db_config['test'])
 
     DatabaseCleaner.strategy = :transaction
