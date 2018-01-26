@@ -71,12 +71,12 @@ I use [New relic](https://rpm.newrelic.com) and use the following NRQL to create
 
 #### Tuples over limit
 ```SQL
-SELECT percentile(tuples_over_limit, 95) from AutoVacuumLagging facet table where appName = 'dandelion-prod' TIMESERIES 30 minutes since 1 day ago
+SELECT percentile(tuples_over_limit, 95) from AutoVacuumLagging facet table where appName = 'my-app' TIMESERIES 30 minutes since 1 day ago
 ```
 
 #### Dead tuples
 ```SQL
-SELECT percentile(dead_tuples) FROM AutoVacuumLagging facet table where appName = 'dandelion-prod' SINCE 1 DAY AGO TIMESERIES
+SELECT percentile(dead_tuples) FROM AutoVacuumLagging facet table where appName = 'my-app' SINCE 1 DAY AGO TIMESERIES
 ```     
 #### Long running queries
 ```SQL
@@ -85,7 +85,7 @@ SELECT application_name, query, running_time, start_time FROM LongQueries
 
 #### Tables that need to be vacuumed
 ```SQL
-SELECT uniques(table) FROM AutoVacuumLagging where appName = 'dandelion-prod' since 30 minutes ago
+SELECT uniques(table) FROM AutoVacuumLagging where appName = 'my-app' since 30 minutes ago
 ```
 
 ## Contributing
