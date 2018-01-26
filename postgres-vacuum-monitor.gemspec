@@ -4,13 +4,13 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'postgres/vacuum/monitor/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'pg-vacuum-monitor'
-  spec.version       = Postgres::Vacuum::Monitor::VERSION
+  spec.name          = 'pg-vacuum-monitor-job'
+  spec.version       = '0.2.0'
   spec.authors       = ['Fernando Garces']
   spec.email         = ['fgarces@salsify.com']
 
   spec.summary       = 'Simple stats collector for postgres auto vacuumer.'
-  spec.description   = 'Queries the Active Record DB for information regarding the auto vacuum process and long running queries'
+  spec.description   = 'Queries the Active Record DB for information regarding the auto vacuum process and long running queries.'
   spec.homepage      = 'https://github.com/salsify/postgres-vacuum-monitor'
 
   spec.files = `git ls-files -z`.split("\x0").reject do |f|
