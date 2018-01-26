@@ -20,6 +20,8 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
+  spec.required_ruby_version = '>= 2.4.0'
+
   spec.add_development_dependency 'appraisal'
   spec.add_development_dependency 'bundler', '~> 1.16'
   spec.add_development_dependency 'coveralls'
@@ -28,7 +30,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec', '~> 3.2'
   spec.add_development_dependency 'salsify_rubocop'
 
-  spec.add_dependency 'activejob'
-  spec.add_dependency 'activerecord'
+  spec.add_dependency 'activerecord', '>= 5', '< 5.2'
   spec.add_dependency 'pg', '~> 0.18'
 end
