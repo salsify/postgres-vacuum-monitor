@@ -5,7 +5,7 @@ require 'postgres/vacuum/monitor/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'pg-vacuum-monitor-job'
-  spec.version       = '0.2.0'
+  spec.version       = Postgres::Vacuum::Monitor::VERSION
   spec.authors       = ['Fernando Garces']
   spec.email         = ['fgarces@salsify.com']
 
