@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'postgres/vacuum/monitor/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'postgres-vacuum-monitor'
+  spec.name          = 'pg-vacuum-monitor'
   spec.version       = Postgres::Vacuum::Monitor::VERSION
   spec.authors       = ['Fernando Garces']
   spec.email         = ['fgarces@salsify.com']
