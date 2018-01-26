@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/salsify/postgres-vacuum-monitor.svg?branch=master)](https://travis-ci.org/salsify/postgres-vacuum-monitor)
 [![Coverage Status](https://coveralls.io/repos/github/salsify/postgres-vacuum-monitor/badge.svg?branch=master)](https://coveralls.io/github/salsify/postgres-vacuum-monitor?branch=master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/9ced178ca8fee231a935/maintainability)](https://codeclimate.com/github/salsify/postgres-vacuum-monitor/maintainability)
 
 
 # Postgres::Vacuum::Monitor
