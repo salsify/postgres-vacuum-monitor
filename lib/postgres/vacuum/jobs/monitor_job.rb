@@ -1,8 +1,7 @@
 module Postgres
   module Vacuum
     module Jobs
-      class MonitorJob < ::ActiveJob::Base
-        queue_as :default
+      class MonitorJob
 
         AUTOVACUUM_QUERY_EVENT = 'AutoVacuumLagging'.freeze
         LONG_QUERIES = 'LongQueries'.freeze
