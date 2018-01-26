@@ -1,4 +1,3 @@
-require 'active_job'
 require 'active_record'
 require 'postgres/vacuum/configuration'
 require 'postgres/vacuum/monitor/version'
