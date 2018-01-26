@@ -1,3 +1,6 @@
+require 'coveralls'
+Coveralls.wear!
+
 require 'logger'
 require 'database_cleaner'
 require 'yaml'

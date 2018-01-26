@@ -7,4 +7,6 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 #
 gem 'activejob'
 gem 'activerecord'
+gem 'pg'
+gem 'coveralls', require: false
 gemspec
