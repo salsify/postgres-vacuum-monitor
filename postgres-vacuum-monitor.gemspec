@@ -30,6 +30,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec', '~> 3.2'
   spec.add_development_dependency 'salsify_rubocop'
 
-  spec.add_dependency 'activerecord', '>= 5', '< 5.2'
+  spec.add_dependency 'activerecord', '>= 5', '< 6.0'
   spec.add_dependency 'pg', '~> 0.18'
 end
