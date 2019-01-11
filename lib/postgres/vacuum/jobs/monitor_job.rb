@@ -1,4 +1,3 @@
-require 'pry'
 module Postgres
   module Vacuum
     module Jobs

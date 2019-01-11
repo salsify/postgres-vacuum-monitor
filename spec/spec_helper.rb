@@ -12,6 +12,7 @@ ActiveRecord::Base.logger = Logger.new('log/test.log')
 ActiveRecord::Base.logger.level = Logger::DEBUG
 ActiveRecord::Migration.verbose = false
 db_config = YAML.safe_load(File.read('spec/db/database.yml.travis'))
+DB_CONFIG = db_config
 
 RSpec.configure do |config|
 
