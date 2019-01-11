@@ -1,3 +1,4 @@
+require 'pry'
 module Postgres
   module Vacuum
     module Jobs
@@ -7,10 +8,11 @@ module Postgres
         LONG_QUERIES = 'LongQueries'.freeze
 
         def perform(*)
-          each_database_connection do |connection|
+          with_each_db_name_and_connection do |name, connection|
             connection.execute(Postgres::Vacuum::Monitor::Query.long_running_queries).each do |row|
               reporter_class.report_event(
                 LONG_QUERIES,
+                db_name: name,
                 start_time: row['xact_start'],
                 running_time: row['seconds'],
                 application_name: row['application_name'],
@@ -21,6 +23,7 @@ module Postgres
             connection.execute(Postgres::Vacuum::Monitor::Query.tables_eligible_vacuuming).each do |row|
               reporter_class.report_event(
                 AUTOVACUUM_QUERY_EVENT,
+                db_name: name,
                 table: row['relation'],
                 table_size: row['table_size'],
                 dead_tuples: row['dead_tuples'].to_i,
@@ -41,11 +44,14 @@ module Postgres
           @reporter_class_name
         end
 
-        def each_database_connection
+        def with_each_db_name_and_connection
           databases = Set.new
           ActiveRecord::Base.connection_handler.connection_pools.map do |connection_pool|
             db_name = connection_pool.spec.config[:database]
-            yield connection_pool.connection if databases.add?(db_name)
+            # activerecord allocates a connection pool per call to establish_connection
+            # multiple pools might interact with the same database so we use the
+            # database name to dedup
+            connection_pool.with_connection { |conn| yield(db_name, conn) } if databases.add?(db_name)
           end
         end
 
