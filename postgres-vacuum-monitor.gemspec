@@ -31,5 +31,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'salsify_rubocop'
 
   spec.add_dependency 'activerecord', '>= 5', '< 5.3'
-  spec.add_dependency 'pg', '~> 0.18'
+  spec.add_dependency 'pg', '>= 0.18', '< 2.0'
 end
