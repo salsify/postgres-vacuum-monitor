@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 2.4.0'
 
   spec.add_development_dependency 'appraisal'
-  spec.add_development_dependency 'bundler', '~> 1.16'
+  spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'coveralls'
   spec.add_development_dependency 'database_cleaner'
   spec.add_development_dependency 'rake', '~> 10.0'
@@ -31,5 +31,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'salsify_rubocop'
 
   spec.add_dependency 'activerecord', '>= 5', '< 5.3'
-  spec.add_dependency 'pg', '~> 0.18'
+  spec.add_dependency 'pg', '>= 0.18', '< 2.0'
 end
