@@ -47,7 +47,7 @@ end
 For long running queries, the event name is `LongQueries` and the attributes are: 
 ```ruby 
 {
-  db_name: # The name of the database.
+  database_name: # The name of the database.
   start_time: # When the query started .
   running_time: # How long has it been running in seconds.
   application_name: # What's the application name that is running the query.
@@ -59,7 +59,7 @@ For auto vacuum the attributes are the following:
 
 ```ruby 
 {
-  db_name: # The name of the database.
+  database_name: # The name of the database.
   table: # Table name.
   table_size: # How big is the table.
   dead_tuples: # How many dead tuples are in the table.

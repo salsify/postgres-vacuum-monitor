@@ -11,7 +11,7 @@ module Postgres
             connection.execute(Postgres::Vacuum::Monitor::Query.long_running_queries).each do |row|
               reporter_class.report_event(
                 LONG_QUERIES,
-                db_name: name,
+                database_name: name,
                 start_time: row['xact_start'],
                 running_time: row['seconds'],
                 application_name: row['application_name'],
@@ -22,7 +22,7 @@ module Postgres
             connection.execute(Postgres::Vacuum::Monitor::Query.tables_eligible_vacuuming).each do |row|
               reporter_class.report_event(
                 AUTOVACUUM_QUERY_EVENT,
-                db_name: name,
+                database_name: name,
                 table: row['relation'],
                 table_size: row['table_size'],
                 dead_tuples: row['dead_tuples'].to_i,
