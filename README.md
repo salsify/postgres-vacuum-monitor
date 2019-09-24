@@ -67,6 +67,10 @@ For auto vacuum the attributes are the following:
 }
 ```
 
+## Testing
+
+To run the rspec tests, you need to create a DB called `postgres_vacuum_monitor_test`.
+
 ## New relic queries
 
 I use [New relic](https://rpm.newrelic.com) and use the following NRQL to create dashboards:
