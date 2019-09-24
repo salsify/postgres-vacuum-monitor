@@ -11,6 +11,6 @@ before_script:
   - psql -c 'create database postgres_vacuum_monitor_test;' -U postgres
   - bundle exec appraisal install
 script:
- - bundle exec rspec spec/
+ - bundle exec appraisal rspec spec/
 addons:
   postgresql: '9.6'
