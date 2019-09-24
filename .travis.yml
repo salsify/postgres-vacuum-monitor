@@ -3,11 +3,14 @@ rvm:
  - 2.4
  - 2.5
  - 2.6
+gemfile:
+ - gemfiles/activerecord_5.gemfile
+ - gemfiles/activerecord_6.gemfile
 services:
   - postgresql
-
 before_script:
   - psql -c 'create database postgres_vacuum_monitor_test;' -U postgres
-
+  - bundle exec rake appraisal:install
+script: "bundle exec rspec spec"
 addons:
   postgresql: '9.6'
