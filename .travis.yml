@@ -6,11 +6,12 @@ gemfile:
  - gemfiles/activerecord_5.gemfile
  - gemfiles/activerecord_6.gemfile
 services:
-  - postgresql
+ - postgresql
 before_script:
-  - psql -c 'create database postgres_vacuum_monitor_test;' -U postgres
-  - bundle exec appraisal install
-script:
- - bundle exec appraisal rspec spec/
+ - psql -c 'create database postgres_vacuum_monitor_test;' -U postgres
+before_install:
+ - gem install bundler
+ - bundle exec appraisal install
+script: 'bundle exec appraisal rspec spec/'
 addons:
   postgresql: '9.6'
