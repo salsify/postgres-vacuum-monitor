@@ -1,4 +1,9 @@
 # postgres-vacuum-monitor
+## v.0.5.0
+- Renamed `LongQueries` event to `LongTransactions`. 
+- Renamed `LongTransactions.query` to `LongTransactions.most_recent_query` and added a
+  transaction `state` attribute.
+
 ## v.0.4.0
   - Add rails 6 support.
 
