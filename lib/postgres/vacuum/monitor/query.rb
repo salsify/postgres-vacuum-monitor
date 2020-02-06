@@ -11,7 +11,7 @@ module Postgres
         MAX_AGE_SETTING = "'autovacuum_freeze_max_age'".freeze
         PG_CATALOG = "'pg_catalog'".freeze
 
-        def long_running_queries
+        def long_running_transactions
           <<-SQL
             SELECT *
             FROM (
@@ -20,7 +20,8 @@ module Postgres
                 xact_start,
                 EXTRACT(EPOCH FROM (now() - xact_start)) AS seconds,
                 application_name,
-                query
+                query,
+                state
               FROM pg_stat_activity
               WHERE state IN (#{STATES.join(', ')})
               ORDER BY seconds DESC

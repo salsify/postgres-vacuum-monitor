@@ -8,7 +8,7 @@
 Postgres::Vacuum::Monitor provides queries that provide information about the number of dead tuples and long running queries.
 This information helps to diagnose and monitor two things: 
 1) That the current auto vacuum settings are working and keeping up.
-2) That there are no long running queries affecting the auto vacuuming daemon.
+2) That there are no long running transactions affecting the auto vacuuming daemon.
 
 ## Installation
 
@@ -44,14 +44,15 @@ class MetricsReporter
 end
 ```
 
-For long running queries, the event name is `LongQueries` and the attributes are: 
+For long running transactions, the event name is `LongTransactions` and the attributes are: 
 ```ruby 
 {
   database_name: # The name of the database.
-  start_time: # When the query started .
+  start_time: # When the transaction started .
   running_time: # How long has it been running in seconds.
   application_name: # What's the application name that is running the query.
-  query: # The offending query.
+  most_recent_query: # The last query started by the transaction
+  state: # The state of the transaction - either "active" or ""
 }
 ```
 
@@ -84,9 +85,9 @@ SELECT percentile(tuples_over_limit, 95) from AutoVacuumLagging facet table wher
 ```SQL
 SELECT percentile(dead_tuples) FROM AutoVacuumLagging facet table where appName = 'my-app' SINCE 1 DAY AGO TIMESERIES
 ```     
-#### Long running queries
+#### Long running transactions
 ```SQL
-SELECT application_name, query, running_time, start_time FROM LongQueries
+SELECT application_name, state, most_recent_query, running_time, start_time FROM LongTransactions
 ```
 
 #### Tables that need to be vacuumed

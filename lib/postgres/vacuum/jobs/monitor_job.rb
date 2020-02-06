@@ -3,25 +3,26 @@ module Postgres
     module Jobs
       class MonitorJob
 
-        AUTOVACUUM_QUERY_EVENT = 'AutoVacuumLagging'.freeze
-        LONG_QUERIES = 'LongQueries'.freeze
+        AUTOVACUUM_LAGGING_EVENT = 'AutoVacuumLagging'.freeze
+        LONG_TRANSACTIONS = 'LongTransactions'.freeze
 
         def perform(*)
           with_each_db_name_and_connection do |name, connection|
-            connection.execute(Postgres::Vacuum::Monitor::Query.long_running_queries).each do |row|
+            connection.execute(Postgres::Vacuum::Monitor::Query.long_running_transactions).each do |row|
               reporter_class.report_event(
-                LONG_QUERIES,
+                LONG_TRANSACTIONS,
                 database_name: name,
                 start_time: row['xact_start'],
                 running_time: row['seconds'],
                 application_name: row['application_name'],
-                query: row['query']
+                most_recent_query: row['query'],
+                state: row['state']
               )
             end
 
             connection.execute(Postgres::Vacuum::Monitor::Query.tables_eligible_vacuuming).each do |row|
               reporter_class.report_event(
-                AUTOVACUUM_QUERY_EVENT,
+                AUTOVACUUM_LAGGING_EVENT,
                 database_name: name,
                 table: row['relation'],
                 table_size: row['table_size'],
