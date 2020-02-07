@@ -16,7 +16,10 @@ module Postgres
                 running_time: row['seconds'],
                 application_name: row['application_name'],
                 most_recent_query: row['query'],
-                state: row['state']
+                state: row['state'],
+                wait_event_type: row['wait_event_type'],
+                transaction_id: row['backend_xid'],
+                min_transaction_id: row['backend_xmin']
               )
             end
 
