@@ -1,10 +1,12 @@
 module Postgres
   module Vacuum
     class Configuration
-      attr_accessor :monitor_reporter_class_name
+      DEFAULT_LONG_RUNNING_TRANSACTION_THRESHOLD_SECONDS = 5 * 60
+      attr_accessor :monitor_reporter_class_name, :long_running_transaction_threshold_seconds
 
       def initialize
-        @monitor_reporter_class_name = nil
+        self.monitor_reporter_class_name = nil
+        self.long_running_transaction_threshold_seconds = DEFAULT_LONG_RUNNING_TRANSACTION_THRESHOLD_SECONDS
       end
     end
   end
