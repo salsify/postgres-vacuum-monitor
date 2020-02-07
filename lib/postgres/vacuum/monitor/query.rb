@@ -5,7 +5,6 @@ module Postgres
         extend self
 
         STATES = ["'idle in transaction'", "'active'"].freeze
-        TIME_LIMIT = 3600
         THRESHOLD_SETTING = "'autovacuum_vacuum_threshold'".freeze
         SCALE_FACTOR_SETTING = "'autovacuum_vacuum_scale_factor'".freeze
         MAX_AGE_SETTING = "'autovacuum_freeze_max_age'".freeze
@@ -29,7 +28,7 @@ module Postgres
               WHERE state IN (#{STATES.join(', ')})
               ORDER BY seconds DESC
             ) AS long_queries
-            WHERE seconds > #{TIME_LIMIT};
+            WHERE seconds > #{Postgres::Vacuum::Monitor.configuration.long_running_transaction_threshold_seconds};
           SQL
         end
 

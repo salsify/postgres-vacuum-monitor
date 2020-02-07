@@ -33,6 +33,8 @@ The job itself needs a class to report the information and can be configured by 
 ```ruby
 Postgres::Vacuum::Monitor.configure do |config|
   config.monitor_reporter_class_name = 'MetricsReporter'
+  # Optionally change the default threshold of 5 minutes for reporting long running transactions
+  config.long_running_transaction_threshold_seconds = 10 * 60  
 end
 ```
 

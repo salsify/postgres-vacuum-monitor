@@ -2,7 +2,7 @@ describe Postgres::Vacuum::Monitor::Query do
 
   describe ".long_query" do
     it "respects the time window" do
-      expect(Postgres::Vacuum::Monitor::Query.long_running_transactions).to include "seconds > #{Postgres::Vacuum::Monitor::Query::TIME_LIMIT}"
+      expect(Postgres::Vacuum::Monitor::Query.long_running_transactions).to include "seconds > #{Postgres::Vacuum::Monitor.configuration.long_running_transaction_threshold_seconds}"
     end
 
     it "respects the states" do
