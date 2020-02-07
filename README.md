@@ -52,7 +52,10 @@ For long running transactions, the event name is `LongTransactions` and the attr
   running_time: # How long has it been running in seconds.
   application_name: # What's the application name that is running the query.
   most_recent_query: # The last query started by the transaction
-  state: # The state of the transaction - either "active" or ""
+  state: # The state of the transaction - either "active" or "idle in transaction"
+  wait_event_type: # The type of lock the transaction is waiting for if applicable
+  transaction_id: # The transaction_id which will be null for read-only transactions
+  min_transaction_id: # The mininum transaction id horizon
 }
 ```
 

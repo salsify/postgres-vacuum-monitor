@@ -27,7 +27,10 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
           'seconds' => 'test_seconds',
           'application_name' => 'test_application_name',
           'query' => 'test_query',
-          'state' => 'test_state'
+          'state' => 'test_state',
+          'wait_event_type' => 'test_wait_event_type',
+          'backend_xid' => 'test_backend_xid',
+          'backend_xmin' => 'test_backend_xmin'
         ]
       )
 
@@ -40,7 +43,10 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
         running_time: 'test_seconds',
         application_name: 'test_application_name',
         most_recent_query: 'test_query',
-        state: 'test_state'
+        state: 'test_state',
+        wait_event_type: 'test_wait_event_type',
+        transaction_id: 'test_backend_xid',
+        min_transaction_id: 'test_backend_xmin'
       )
     end
 

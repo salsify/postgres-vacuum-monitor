@@ -21,7 +21,10 @@ module Postgres
                 EXTRACT(EPOCH FROM (now() - xact_start)) AS seconds,
                 application_name,
                 query,
-                state
+                state,
+                backend_xid,
+                backend_xmin,
+                wait_event_type
               FROM pg_stat_activity
               WHERE state IN (#{STATES.join(', ')})
               ORDER BY seconds DESC

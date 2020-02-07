@@ -1,5 +1,8 @@
 # postgres-vacuum-monitor
 ## v.0.5.0
+- Add `wait_event_type`, `transaction_id` and `min_transaction_id` to `LongTransactions` events.
+
+## v.0.5.0
 - Renamed `LongQueries` event to `LongTransactions`. 
 - Renamed `LongTransactions.query` to `LongTransactions.most_recent_query` and added a
   transaction `state` attribute.
