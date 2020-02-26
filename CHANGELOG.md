@@ -1,7 +1,10 @@
 # postgres-vacuum-monitor
 
 ## v.0.8.0
-- Also report on queries that are being blocked by another process.
+- Add the application name in the event.
+
+## v.0.8.0
+- Report on queries that are being blocked by another process.
 
 ## v.0.7.0
 - Lower the default `LongTransactions` threshold from 1 hour to 5 minutes and make this configurable via

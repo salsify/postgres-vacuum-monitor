@@ -76,8 +76,10 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
       allow(mock_connection).to receive(:execute).with(Postgres::Vacuum::Monitor::Query.blocked_queries).and_return(
         [
           'blocked_pid' => 2,
+          'blocked_application' => 'foo',
           'blocked_statement' => 'SELECT 1 FROM products',
           'blocking_pid' => 3,
+          'blocking_application' => 'bar',
           'current_statement_in_blocking_process' => 'SELECT 2 FROM products'
         ]
       )
@@ -87,9 +89,11 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
       expect(TestMetricsReporter).to have_received(:report_event).with(
         Postgres::Vacuum::Jobs::MonitorJob::BLOCKED_QUERIES,
         database_name: 'postgres_vacuum_monitor_test',
+        blocked_application: 'foo',
         blocked_pid: 2,
         blocked_statement: 'SELECT 1 FROM products',
         blocking_pid: 3,
+        blocking_application: 'bar',
         current_statement_in_blocking_process: 'SELECT 2 FROM products'
       )
     end
