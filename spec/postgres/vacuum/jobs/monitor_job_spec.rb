@@ -72,6 +72,28 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
       )
     end
 
+    it "reports blocked queries" do
+      allow(mock_connection).to receive(:execute).with(Postgres::Vacuum::Monitor::Query.blocked_queries).and_return(
+        [
+          'blocked_pid' => 2,
+          'blocked_statement' => 'SELECT 1 FROM products',
+          'blocking_pid' => 3,
+          'current_statement_in_blocking_process' => 'SELECT 2 FROM products'
+        ]
+      )
+
+      job.perform
+
+      expect(TestMetricsReporter).to have_received(:report_event).with(
+        Postgres::Vacuum::Jobs::MonitorJob::BLOCKED_QUERIES,
+        database_name: 'postgres_vacuum_monitor_test',
+        blocked_pid: 2,
+        blocked_statement: 'SELECT 1 FROM products',
+        blocking_pid: 3,
+        current_statement_in_blocking_process: 'SELECT 2 FROM products'
+      )
+    end
+
     context "with multiple connection pools" do
 
       class SecondPool < ActiveRecord::Base
@@ -81,7 +103,7 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
 
       it "reports once for a single database." do
         expect(job.perform).to eq true
-        expect(mock_connection).to have_received(:execute).twice
+        expect(mock_connection).to have_received(:execute).exactly(3)
       end
 
       context "to different databases" do
@@ -93,7 +115,7 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
 
         it "reports twice for two databases" do
           expect(job.perform).to eq true
-          expect(mock_connection).to have_received(:execute).exactly(4)
+          expect(mock_connection).to have_received(:execute).exactly(6)
         end
       end
     end

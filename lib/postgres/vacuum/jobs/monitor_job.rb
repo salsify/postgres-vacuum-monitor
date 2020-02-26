@@ -5,6 +5,7 @@ module Postgres
 
         AUTOVACUUM_LAGGING_EVENT = 'AutoVacuumLagging'.freeze
         LONG_TRANSACTIONS = 'LongTransactions'.freeze
+        BLOCKED_QUERIES = 'BlockedQueries'.freeze
 
         def perform(*)
           with_each_db_name_and_connection do |name, connection|
@@ -31,6 +32,17 @@ module Postgres
                 table_size: row['table_size'],
                 dead_tuples: row['dead_tuples'].to_i,
                 tuples_over_limit: row['dead_tuples'].to_i - row['autovacuum_vacuum_tuples'].to_i
+              )
+            end
+
+            connection.execute(Postgres::Vacuum::Monitor::Query.blocked_queries).each do |row|
+              reporter_class.report_event(
+                BLOCKED_QUERIES,
+                database_name: name,
+                blocked_pid: row['blocked_pid'],
+                blocked_statement: row['blocked_statement'],
+                blocking_pid: row['blocking_pid'],
+                current_statement_in_blocking_process: row['current_statement_in_blocking_process']
               )
             end
           end

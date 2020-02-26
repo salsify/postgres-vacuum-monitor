@@ -1,4 +1,8 @@
 # postgres-vacuum-monitor
+
+## v.0.8.0
+- Also report on queries that are being blocked by another process.
+
 ## v.0.7.0
 - Lower the default `LongTransactions` threshold from 1 hour to 5 minutes and make this configurable via
   the `long_running_transaction_threshold_seconds` setting.
