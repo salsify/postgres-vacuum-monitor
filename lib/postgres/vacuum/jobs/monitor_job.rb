@@ -40,8 +40,10 @@ module Postgres
                 BLOCKED_QUERIES,
                 database_name: name,
                 blocked_pid: row['blocked_pid'],
+                blocked_application: row['blocked_application'],
                 blocked_statement: row['blocked_statement'],
                 blocking_pid: row['blocking_pid'],
+                blocking_application: row['blocking_application'],
                 current_statement_in_blocking_process: row['current_statement_in_blocking_process']
               )
             end
