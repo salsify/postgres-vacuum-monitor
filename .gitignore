@@ -9,5 +9,5 @@
 *.iml
 .idea/
 Gemfile.lock
-log/*.log
 gemfiles/*.gemfile.lock
+log/
