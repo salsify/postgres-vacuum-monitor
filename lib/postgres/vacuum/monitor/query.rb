@@ -97,6 +97,28 @@ module Postgres
             WHERE NOT blocked_locks.GRANTED;
           SQL
         end
+
+        def connection_state
+          <<-SQL
+            SELECT 
+              state, count(*) as connection_count 
+            FROM pg_stat_activity 
+            GROUP BY state 
+            ORDER BY count DESC;
+          SQL
+        end
+
+        def connection_idle_time
+          <<-SQL
+            SELECT
+                max(EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - state_change))) as max,
+                percentile_cont(0.5) within GROUP (ORDER BY EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - state_change)) DESC) AS median,
+                percentile_cont(0.9) within GROUP (ORDER BY EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - state_change)) DESC) AS percentile_90
+            FROM pg_stat_activity
+            WHERE state = 'idle'
+            LIMIT 1000;
+          SQL
+        end
       end
     end
   end

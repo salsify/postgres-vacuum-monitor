@@ -6,6 +6,8 @@ module Postgres
         AUTOVACUUM_LAGGING_EVENT = 'AutoVacuumLagging'.freeze
         LONG_TRANSACTIONS = 'LongTransactions'.freeze
         BLOCKED_QUERIES = 'BlockedQueries'.freeze
+        CONNECTION_STATE = 'ConnectionState'.freeze
+        CONNECTION_IDLE_TIME = 'ConnectionIdleTime'.freeze
 
         def perform(*)
           with_each_db_name_and_connection do |name, connection|
@@ -45,6 +47,20 @@ module Postgres
                 blocking_pid: row['blocking_pid'],
                 blocking_application: row['blocking_application'],
                 current_statement_in_blocking_process: row['current_statement_in_blocking_process']
+              )
+            end
+
+            connection.execute(Postgres::Vacuum::Monitor::Query.connection_state).each do |row|
+              reporter_class.report_event(CONNECTION_STATE, database_name: name, state: row['state'], connection_count: row['connection_count'])
+            end
+
+            connection.execute(Postgres::Vacuum::Monitor::Query.connection_idle_time).each do |row|
+              reporter_class.report_event(
+                CONNECTION_IDLE_TIME,
+                database_name: name,
+                max: row['max'],
+                median: row['median'],
+                percentile_90: row['percentile_90']
               )
             end
           end
