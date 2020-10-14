@@ -1,6 +1,9 @@
 # postgres-vacuum-monitor
 
-## v.0.8.0
+## v.10.0
+- Add events for connection idle time and state.
+
+## v.0.9.0
 - Add the application name in the event.
 
 ## v.0.8.0
