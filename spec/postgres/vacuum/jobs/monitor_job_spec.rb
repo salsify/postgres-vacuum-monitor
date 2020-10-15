@@ -98,6 +98,37 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
       )
     end
 
+    it "reports connection state" do
+      allow(mock_connection).to receive(:execute).with(Postgres::Vacuum::Monitor::Query.connection_state).and_return(
+        ['connection_count' => 4, 'state' => 'idle']
+      )
+
+      job.perform
+
+      expect(TestMetricsReporter).to have_received(:report_event).with(
+        Postgres::Vacuum::Jobs::MonitorJob::CONNECTION_STATE,
+        database_name: 'postgres_vacuum_monitor_test',
+        connection_count: 4,
+        state: 'idle'
+      )
+    end
+
+    it "reports connection idle time" do
+      allow(mock_connection).to receive(:execute).with(Postgres::Vacuum::Monitor::Query.connection_idle_time).and_return(
+        ['max' => 3.1, 'median' => 222.22, 'percentile_90' => 9323.323]
+      )
+
+      job.perform
+
+      expect(TestMetricsReporter).to have_received(:report_event).with(
+        Postgres::Vacuum::Jobs::MonitorJob::CONNECTION_IDLE_TIME,
+        database_name: 'postgres_vacuum_monitor_test',
+        max: 3.1,
+        median: 222.22,
+        percentile_90: 9323.323
+      )
+    end
+
     context "with multiple connection pools" do
 
       class SecondPool < ActiveRecord::Base
@@ -107,7 +138,7 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
 
       it "reports once for a single database." do
         expect(job.perform).to eq true
-        expect(mock_connection).to have_received(:execute).exactly(3)
+        expect(mock_connection).to have_received(:execute).exactly(5)
       end
 
       context "to different databases" do
@@ -119,7 +150,7 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
 
         it "reports twice for two databases" do
           expect(job.perform).to eq true
-          expect(mock_connection).to have_received(:execute).exactly(6)
+          expect(mock_connection).to have_received(:execute).exactly(10)
         end
       end
     end
