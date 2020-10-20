@@ -1,5 +1,8 @@
 # postgres-vacuum-monitor
 
+## v.10.1
+- Query bug fix.
+
 ## v.10.0
 - Add events for connection idle time and state.
 
