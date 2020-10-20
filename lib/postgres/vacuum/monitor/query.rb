@@ -104,7 +104,7 @@ module Postgres
               state, count(*) as connection_count 
             FROM pg_stat_activity 
             GROUP BY state 
-            ORDER BY count DESC;
+            ORDER BY connection_count DESC;
           SQL
         end
 
