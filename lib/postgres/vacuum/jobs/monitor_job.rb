@@ -80,7 +80,8 @@ module Postgres
         def with_each_db_name_and_connection
           databases = Set.new
           ActiveRecord::Base.connection_handler.connection_pools.map do |connection_pool|
-            db_name = connection_pool.spec.config[:database]
+            db_name = Postgres::Vacuum::Compatibility.pre_rails_6_1? ? connection_pool.spec.config[:database] : connection_pool.db_config.configuration_hash[:database]
+
             # activerecord allocates a connection pool per call to establish_connection
             # multiple pools might interact with the same database so we use the
             # database name to dedup
