@@ -48,7 +48,6 @@ jobs:
 workflows:
   build:
     jobs:
-      - lint
       - test:
           matrix:
             parameters:
