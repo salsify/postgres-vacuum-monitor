@@ -1,5 +1,8 @@
 # postgres-vacuum-monitor
 
+## v.11.0
+- Add support for rails 6.1
+
 ## v.10.1
 - Query bug fix.
 
