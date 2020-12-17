@@ -1,0 +1,57 @@
+version: 2.1
+jobs:
+  test:
+    parameters:
+      gemfile:
+        type: string
+    docker:
+      - image: salsify/ruby_ci:2.5.8
+        environment:
+          TEST_DATABASE_URL: postgresql://circleci@localhost/circle_test
+      - image: circleci/postgres:9.6
+        environment:
+          POSTGRES_USER: "ubuntu"
+          POSTGRES_DB: "postgres_vacuum_monitor_test"
+          POSTGRES_HOST_AUTH_METHOD: "trust"
+    environment:
+      RACK_ENV: "test"
+      DB_HOST: 'localhost'
+      DB_USER: 'ubuntu'
+      RAILS_ENV: "test"
+      CIRCLE_TEST_REPORTS: "test-results"
+      BUNDLE_GEMFILE: << parameters.gemfile >>
+    working_directory: ~/postgres-vacuum-monitor
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-gems-ruby-2.5.8-{{ checksum "postgres-vacuum-monitor.gemspec" }}-{{ checksum "<< parameters.gemfile >>" }}
+            - v1-gems-ruby-2.5.8-
+      - run:
+          name: Install Gems
+          command: |
+            if ! bundle check --path=vendor/bundle; then
+              bundle install --path=vendor/bundle --jobs=4 --retry=3
+              bundle clean
+            fi
+      - save_cache:
+          key: v1-gems-ruby-2.5.8-{{ checksum "postgres-vacuum-monitor.gemspec" }}-{{ checksum "<< parameters.gemfile >>" }}
+          paths:
+            - "vendor/bundle"
+            - "gemfiles/vendor/bundle"
+      - run:
+          name: Run Tests
+          command: |
+            bundle exec rspec --format RspecJunitFormatter --out $CIRCLE_TEST_REPORTS/rspec/junit.xml --format progress spec
+      - store_test_results:
+          path: "test-results"
+workflows:
+  build:
+    jobs:
+      - test:
+          matrix:
+            parameters:
+              gemfile:
+                - "gemfiles/activerecord_5_2.gemfile"
+                - "gemfiles/activerecord_6_0.gemfile"
+                - "gemfiles/activerecord_6_1.gemfile"

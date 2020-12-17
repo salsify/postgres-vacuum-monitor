@@ -28,6 +28,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'database_cleaner'
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'rspec', '~> 3.2'
+  spec.add_development_dependency 'rspec_junit_formatter'
   spec.add_development_dependency 'salsify_rubocop'
 
   spec.add_dependency 'activerecord', '< 6.2.0'

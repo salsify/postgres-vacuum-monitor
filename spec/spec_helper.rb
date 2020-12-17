@@ -11,7 +11,7 @@ FileUtils.makedirs('log')
 ActiveRecord::Base.logger = Logger.new('log/test.log')
 ActiveRecord::Base.logger.level = Logger::DEBUG
 ActiveRecord::Migration.verbose = false
-db_config = YAML.safe_load(File.read('spec/db/database.yml.travis'))
+db_config = YAML.safe_load(ERB.new(File.read('spec/db/database.yml')).result)
 DB_CONFIG = db_config
 
 RSpec.configure do |config|
@@ -19,7 +19,10 @@ RSpec.configure do |config|
   DATABASE_NAME = db_config['test']['database']
 
   config.before(:suite) do
-    pg_version = `psql -t -c "select version()";`.strip
+    test_config = db_config['test']
+    url = "postgresql://#{test_config['username']}@#{test_config['host']}/#{test_config['database']}"
+    pg_version = `psql -d #{url} -t -c "select version()";`.strip
+
     puts "Testing with Postgres version: #{pg_version}"
     puts "Testing with ActiveRecord #{ActiveRecord::VERSION::STRING}"
 

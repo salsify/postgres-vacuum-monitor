@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/salsify/postgres-vacuum-monitor.svg?branch=master)](https://travis-ci.org/salsify/postgres-vacuum-monitor)
+[![Build Status](https://circleci.com/gh/salsify/postgres-vacuum-monitor.svg?style=svg)][circleci]
 [![Maintainability](https://api.codeclimate.com/v1/badges/9ced178ca8fee231a935/maintainability)](https://codeclimate.com/github/salsify/postgres-vacuum-monitor/maintainability)
 [![Coverage Status](https://coveralls.io/repos/github/salsify/postgres-vacuum-monitor/badge.svg?branch=master)](https://coveralls.io/github/salsify/postgres-vacuum-monitor?branch=master)
 
