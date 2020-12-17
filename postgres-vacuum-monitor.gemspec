@@ -26,10 +26,10 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'coveralls_reborn', '>= 0.18.0'
   spec.add_development_dependency 'database_cleaner'
-  spec.add_development_dependency 'rake', '>= 12.3.3'
+  spec.add_development_dependency 'rake'
   spec.add_development_dependency 'rspec', '~> 3.2'
   spec.add_development_dependency 'salsify_rubocop'
 
-  spec.add_dependency 'activerecord', '>= 5', '< 6.1'
+  spec.add_dependency 'activerecord', '< 6.2.0'
   spec.add_dependency 'pg', '>= 0.18', '< 2.0'
 end

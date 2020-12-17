@@ -10,4 +10,5 @@
 .idea/
 Gemfile.lock
 gemfiles/*.gemfile.lock
+gemfiles/.bundle/
 log/
