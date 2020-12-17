@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_record'
 require 'postgres/vacuum/compatibility'
 require 'postgres/vacuum/configuration'
@@ -13,7 +15,7 @@ module Postgres
       end
 
       def self.configuration
-        @config ||= Configuration.new
+        @configuration ||= Configuration.new
       end
 
       def self.reset

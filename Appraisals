@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 appraise 'activerecord_5_2' do
   gem 'activerecord', '~> 5.2.0'
 end

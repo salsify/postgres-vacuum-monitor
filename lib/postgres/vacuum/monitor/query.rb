@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Postgres
   module Vacuum
     module Monitor
@@ -5,10 +7,10 @@ module Postgres
         extend self
 
         STATES = ["'idle in transaction'", "'active'"].freeze
-        THRESHOLD_SETTING = "'autovacuum_vacuum_threshold'".freeze
-        SCALE_FACTOR_SETTING = "'autovacuum_vacuum_scale_factor'".freeze
-        MAX_AGE_SETTING = "'autovacuum_freeze_max_age'".freeze
-        PG_CATALOG = "'pg_catalog'".freeze
+        THRESHOLD_SETTING = "'autovacuum_vacuum_threshold'"
+        SCALE_FACTOR_SETTING = "'autovacuum_vacuum_scale_factor'"
+        MAX_AGE_SETTING = "'autovacuum_freeze_max_age'"
+        PG_CATALOG = "'pg_catalog'"
 
         def long_running_transactions
           <<-SQL
@@ -81,7 +83,7 @@ module Postgres
               blocking_activity.application_name AS blocking_application
             FROM pg_catalog.pg_locks blocked_locks
             JOIN pg_catalog.pg_stat_activity blocked_activity  ON blocked_activity.pid = blocked_locks.pid
-            JOIN pg_catalog.pg_locks blocking_locks 
+            JOIN pg_catalog.pg_locks blocking_locks
               ON blocking_locks.locktype = blocked_locks.locktype
               AND blocking_locks.DATABASE IS NOT DISTINCT FROM blocked_locks.DATABASE
               AND blocking_locks.relation IS NOT DISTINCT FROM blocked_locks.relation
@@ -100,10 +102,10 @@ module Postgres
 
         def connection_state
           <<-SQL
-            SELECT 
-              state, count(*) as connection_count 
-            FROM pg_stat_activity 
-            GROUP BY state 
+            SELECT
+              state, count(*) as connection_count
+            FROM pg_stat_activity
+            GROUP BY state
             ORDER BY connection_count DESC;
           SQL
         end

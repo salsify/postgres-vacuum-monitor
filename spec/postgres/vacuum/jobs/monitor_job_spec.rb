@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TestMetricsReporter
   def self.report_event(name, attributes = {})
 
@@ -11,7 +13,8 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
 
     context "without a mocked connection" do
       before do
-        allow(Postgres::Vacuum::Monitor.configuration).to receive(:monitor_reporter_class_name).and_return(TestMetricsReporter.name)
+        allow(Postgres::Vacuum::Monitor.configuration).to receive(:monitor_reporter_class_name)
+                                                            .and_return(TestMetricsReporter.name)
       end
 
       it "executes all the queries" do
@@ -28,23 +31,25 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
           allow(pool).to receive(:with_connection).and_yield(mock_connection)
         end
 
-        allow(Postgres::Vacuum::Monitor.configuration).to receive(:monitor_reporter_class_name).and_return(TestMetricsReporter.name)
+        allow(Postgres::Vacuum::Monitor.configuration).to receive(:monitor_reporter_class_name)
+                                                            .and_return(TestMetricsReporter.name)
         allow(TestMetricsReporter).to receive(:report_event)
       end
 
       it "reports long running transaction events" do
-        allow(mock_connection).to receive(:execute).with(Postgres::Vacuum::Monitor::Query.long_running_transactions).and_return(
-          [
-            'xact_start' => 'test_xact_start',
-            'seconds' => 'test_seconds',
-            'application_name' => 'test_application_name',
-            'query' => 'test_query',
-            'state' => 'test_state',
-            'wait_event_type' => 'test_wait_event_type',
-            'backend_xid' => 'test_backend_xid',
-            'backend_xmin' => 'test_backend_xmin'
-          ]
-        )
+        allow(mock_connection).to receive(:execute).with(Postgres::Vacuum::Monitor::Query.long_running_transactions)
+                                                   .and_return(
+                                                     [
+                                                       'xact_start' => 'test_xact_start',
+                                                       'seconds' => 'test_seconds',
+                                                       'application_name' => 'test_application_name',
+                                                       'query' => 'test_query',
+                                                         'state' => 'test_state',
+                                                         'wait_event_type' => 'test_wait_event_type',
+                                                         'backend_xid' => 'test_backend_xid',
+                                                         'backend_xmin' => 'test_backend_xmin'
+                                                     ]
+                                                   )
 
         job.perform
 
@@ -63,14 +68,15 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
       end
 
       it "reports autovacuum lagging events" do
-        allow(mock_connection).to receive(:execute).with(Postgres::Vacuum::Monitor::Query.tables_eligible_vacuuming).and_return(
-          [
-            'relation' => 'test_relation',
-            'table_size' => 512,
-            'dead_tuples' => 3,
-            'autovacuum_vacuum_tuples' => 1
-          ]
-        )
+        allow(mock_connection).to receive(:execute).with(Postgres::Vacuum::Monitor::Query.tables_eligible_vacuuming)
+                                                   .and_return(
+                                                     [
+                                                       'relation' => 'test_relation',
+                                                       'table_size' => 512,
+                                                       'dead_tuples' => 3,
+                                                       'autovacuum_vacuum_tuples' => 1
+                                                     ]
+                                                   )
 
         job.perform
 
@@ -126,9 +132,9 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
       end
 
       it "reports connection idle time" do
-        allow(mock_connection).to receive(:execute).with(Postgres::Vacuum::Monitor::Query.connection_idle_time).and_return(
-          ['max' => 3.1, 'median' => 222.22, 'percentile_90' => 9323.323]
-        )
+        allow(mock_connection).to receive(:execute)
+                                    .with(Postgres::Vacuum::Monitor::Query.connection_idle_time)
+                                    .and_return(['max' => 3.1, 'median' => 222.22, 'percentile_90' => 9323.323])
 
         job.perform
 
@@ -143,11 +149,6 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
 
       context "with multiple connection pools" do
 
-        class SecondPool < ActiveRecord::Base
-          # might be cleaner to put this in a method if that works.  constant is weird.
-          establish_connection DB_CONFIG['test']
-        end
-
         it "reports once for a single database." do
           expect(job.perform).to eq true
           expect(mock_connection).to have_received(:execute).exactly(5)
@@ -160,7 +161,8 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
             if Postgres::Vacuum::Compatibility.pre_rails_6_1?
               allow(SecondPool.connection_pool.spec).to receive(:config).and_return(name_change_db_config)
             else
-              allow(SecondPool.connection_pool.db_config).to receive(:configuration_hash).and_return(name_change_db_config)
+              allow(SecondPool.connection_pool.db_config).to receive(:configuration_hash)
+                                                               .and_return(name_change_db_config)
             end
           end
 

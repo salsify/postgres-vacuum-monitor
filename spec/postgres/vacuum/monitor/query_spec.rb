@@ -1,12 +1,16 @@
+# frozen_string_literal: true
+
 describe Postgres::Vacuum::Monitor::Query do
 
   describe ".long_query" do
     it "respects the time window" do
-      expect(Postgres::Vacuum::Monitor::Query.long_running_transactions).to include "seconds > #{Postgres::Vacuum::Monitor.configuration.long_running_transaction_threshold_seconds}"
+      query = "seconds > #{Postgres::Vacuum::Monitor.configuration.long_running_transaction_threshold_seconds}"
+      expect(Postgres::Vacuum::Monitor::Query.long_running_transactions).to include(query)
     end
 
     it "respects the states" do
-      expect(Postgres::Vacuum::Monitor::Query.long_running_transactions).to include "WHERE state IN (#{Postgres::Vacuum::Monitor::Query::STATES.join(', ')})"
+      query = "WHERE state IN (#{Postgres::Vacuum::Monitor::Query::STATES.join(', ')})"
+      expect(Postgres::Vacuum::Monitor::Query.long_running_transactions).to include(query)
     end
 
     it "generates a runnable query" do
