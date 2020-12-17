@@ -1,7 +1,11 @@
-appraise 'activerecord-5' do
+appraise 'activerecord_5_2' do
   gem 'activerecord', '< 6.0.0'
 end
 
-appraise 'activerecord-6' do
+appraise 'activerecord_6_0' do
+  gem 'activerecord', '< 6.1.0'
+end
+
+appraise 'activerecord_6_1' do
   gem 'activerecord', '< 6.2.0'
 end
