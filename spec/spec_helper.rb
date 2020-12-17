@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'coveralls'
 Coveralls.wear!
 
@@ -14,9 +16,14 @@ ActiveRecord::Migration.verbose = false
 db_config = YAML.safe_load(ERB.new(File.read('spec/db/database.yml')).result)
 DB_CONFIG = db_config
 
-RSpec.configure do |config|
+# rubocop:disable Rails/ApplicationRecord
+class SecondPool < ActiveRecord::Base
+  # might be cleaner to put this in a method if that works.  constant is weird.
+  establish_connection DB_CONFIG['test']
+end
+# rubocop:enable Rails/ApplicationRecord
 
-  DATABASE_NAME = db_config['test']['database']
+RSpec.configure do |config|
 
   config.before(:suite) do
     test_config = db_config['test']

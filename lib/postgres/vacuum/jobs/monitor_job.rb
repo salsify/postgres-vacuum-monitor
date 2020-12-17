@@ -1,13 +1,15 @@
+# frozen_string_literal: true
+
 module Postgres
   module Vacuum
     module Jobs
       class MonitorJob
 
-        AUTOVACUUM_LAGGING_EVENT = 'AutoVacuumLagging'.freeze
-        LONG_TRANSACTIONS = 'LongTransactions'.freeze
-        BLOCKED_QUERIES = 'BlockedQueries'.freeze
-        CONNECTION_STATE = 'ConnectionState'.freeze
-        CONNECTION_IDLE_TIME = 'ConnectionIdleTime'.freeze
+        AUTOVACUUM_LAGGING_EVENT = 'AutoVacuumLagging'
+        LONG_TRANSACTIONS = 'LongTransactions'
+        BLOCKED_QUERIES = 'BlockedQueries'
+        CONNECTION_STATE = 'ConnectionState'
+        CONNECTION_IDLE_TIME = 'ConnectionIdleTime'
 
         def perform(*)
           with_each_db_name_and_connection do |name, connection|
@@ -51,7 +53,12 @@ module Postgres
             end
 
             connection.execute(Postgres::Vacuum::Monitor::Query.connection_state).each do |row|
-              reporter_class.report_event(CONNECTION_STATE, database_name: name, state: row['state'], connection_count: row['connection_count'])
+              reporter_class.report_event(
+                CONNECTION_STATE,
+                database_name: name,
+                state: row['state'],
+                connection_count: row['connection_count']
+              )
             end
 
             connection.execute(Postgres::Vacuum::Monitor::Query.connection_idle_time).each do |row|
@@ -72,7 +79,9 @@ module Postgres
           return @reporter_class_name if @reporter_class_name
 
           @reporter_class_name = Postgres::Vacuum::Monitor.configuration.monitor_reporter_class_name&.safe_constantize
-          raise ConfigurationError.new('Missing or invalid report class name. Check your configuration') if @reporter_class_name.nil?
+          if @reporter_class_name.nil?
+            raise ConfigurationError.new('Missing or invalid report class name. Check your configuration')
+          end
 
           @reporter_class_name
         end
@@ -80,7 +89,11 @@ module Postgres
         def with_each_db_name_and_connection
           databases = Set.new
           ActiveRecord::Base.connection_handler.connection_pools.map do |connection_pool|
-            db_name = Postgres::Vacuum::Compatibility.pre_rails_6_1? ? connection_pool.spec.config[:database] : connection_pool.db_config.configuration_hash[:database]
+            db_name = if Postgres::Vacuum::Compatibility.pre_rails_6_1?
+                        connection_pool.spec.config[:database]
+                      else
+                        connection_pool.db_config.configuration_hash[:database]
+                      end
 
             # activerecord allocates a connection pool per call to establish_connection
             # multiple pools might interact with the same database so we use the

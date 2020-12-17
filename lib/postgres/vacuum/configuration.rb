@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Postgres
   module Vacuum
     class Configuration
