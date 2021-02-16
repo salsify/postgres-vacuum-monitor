@@ -1,4 +1,7 @@
 # postgres-vacuum-monitor
+## v.12.0
+- Add support for ruby 3
+- Drop support for ruby < 2.6
 
 ## v.11.0
 - Add support for rails 6.1
