@@ -94,5 +94,5 @@ workflows:
                 - "2.7.2"
                 - "3.0.0"
             exclude:
-              - gemfile: "gemfiles/rails_5.2.gemfile"
+              - gemfile: "gemfiles/activerecord_5_2.gemfile"
                 ruby_version: "3.0.0"
