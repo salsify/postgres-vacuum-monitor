@@ -1,9 +1,0 @@
-test:
-  adapter: postgresql
-  encoding: unicode
-  database: postgres_vacuum_monitor_test
-  pool: 5
-  port: <%= ENV['DB_PORT'] || 5432 %>
-  host: <%= ENV['DB_HOST'] || 'localhost' %>
-  username: <%= ENV['DB_USER'] %>
-  password: <%= ENV['DB_PASSWORD'] %>
