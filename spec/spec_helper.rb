@@ -13,30 +13,52 @@ FileUtils.makedirs('log')
 ActiveRecord::Base.logger = Logger.new('log/test.log')
 ActiveRecord::Base.logger.level = Logger::DEBUG
 ActiveRecord::Migration.verbose = false
-db_config = YAML.safe_load(ERB.new(File.read('spec/db/database.yml')).result)
-DB_CONFIG = db_config
+
+database_host = ENV.fetch('DB_HOST', 'localhost')
+database_port = ENV.fetch('DB_PORT', 5432)
+database_user = ENV.fetch('DB_USER', 'postgres')
+database_password = ENV.fetch('DB_PASSWORD', 'password')
+database_url = "postgres://#{database_user}:#{database_password}@#{database_host}:#{database_port}"
+admin_database_name = "/#{ENV['ADMIN_DB_NAME']}" if ENV['ADMIN_DB_NAME'].present?
+
+DATABASE_NAME = 'postgres_vacuum_monitor_test'
 
 # rubocop:disable Rails/ApplicationRecord
-class SecondPool < ActiveRecord::Base
-  # might be cleaner to put this in a method if that works.  constant is weird.
-  establish_connection DB_CONFIG['test']
-end
+class SecondPool < ActiveRecord::Base; end
+SecondPool.establish_connection("#{database_url}/#{DATABASE_NAME}")
 # rubocop:enable Rails/ApplicationRecord
 
+def setup_test_database(pg_conn, database_name)
+  pg_conn.exec("DROP DATABASE IF EXISTS #{database_name}")
+  pg_conn.exec("CREATE DATABASE #{database_name}")
+
+  pg_version = pg_conn.exec('SELECT version()')
+  puts "Testing with Postgres version: #{pg_version.getvalue(0, 0)}"
+  puts "Testing with ActiveRecord #{ActiveRecord::VERSION::STRING}"
+end
+
+def teardown_test_database(pg_conn, database_name)
+  pg_conn.exec("DROP DATABASE IF EXISTS #{database_name}")
+end
+
 RSpec.configure do |config|
-
   config.before(:suite) do
-    test_config = db_config['test']
-    url = "postgresql://#{test_config['username']}@#{test_config['host']}/#{test_config['database']}"
-    pg_version = `psql -d #{url} -t -c "select version()";`.strip
+    PG::Connection.open("#{database_url}#{admin_database_name}") do |connection|
+      setup_test_database(connection, DATABASE_NAME)
+    end
 
-    puts "Testing with Postgres version: #{pg_version}"
-    puts "Testing with ActiveRecord #{ActiveRecord::VERSION::STRING}"
-
-    ActiveRecord::Base.establish_connection(db_config['test'])
+    ActiveRecord::Base.establish_connection("#{database_url}/#{DATABASE_NAME}")
 
     DatabaseCleaner.strategy = :transaction
-    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.after(:suite) do
+    ActiveRecord::Base.connection_pool.disconnect!
+    SecondPool.connection_pool.disconnect!
+
+    PG::Connection.open("#{database_url}#{admin_database_name}") do |connection|
+      teardown_test_database(connection, DATABASE_NAME)
+    end
   end
 
   config.around do |example|
