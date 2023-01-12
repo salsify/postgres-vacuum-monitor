@@ -1,15 +1,20 @@
 # postgres-vacuum-monitor
-## v.12.0
-- Add support for ruby 3
+
+## v0.13.0
+- Add support for ruby 3.2 and Rails 7.0
+- Drop support for ruby < 2.7 and Rails < 6.0.
+
+## v0.12.0
+- Add support for ruby 3.0
 - Drop support for ruby < 2.6
 
-## v.11.0
+## v0.11.0
 - Add support for rails 6.1
 
-## v.10.1
+## v0.10.1
 - Query bug fix.
 
-## v.10.0
+## v0.10.0
 - Add events for connection idle time and state.
 
 ## v.0.9.0
