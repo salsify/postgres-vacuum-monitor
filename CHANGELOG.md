@@ -1,5 +1,8 @@
 # postgres-vacuum-monitor
 
+## v0.13.1
+- Fix long running transaction duration reporting in Postgres 14
+
 ## v0.13.0
 - Add support for ruby 3.2 and Rails 7.0
 - Drop support for ruby < 2.7 and Rails < 6.0.
@@ -31,7 +34,7 @@
 - Add `wait_event_type`, `transaction_id` and `min_transaction_id` to `LongTransactions` events.
 
 ## v.0.5.0
-- Renamed `LongQueries` event to `LongTransactions`. 
+- Renamed `LongQueries` event to `LongTransactions`.
 - Renamed `LongTransactions.query` to `LongTransactions.most_recent_query` and added a
   transaction `state` attribute.
 
@@ -43,4 +46,3 @@
 
 ## v.0.3.1
   - Relax pg requirements
-
