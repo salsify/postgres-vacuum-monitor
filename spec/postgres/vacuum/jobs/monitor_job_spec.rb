@@ -41,7 +41,7 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
                                                    .and_return(
                                                      [
                                                        'xact_start' => 'test_xact_start',
-                                                       'seconds' => 'test_seconds',
+                                                       'seconds' => 60.00,
                                                        'application_name' => 'test_application_name',
                                                        'query' => 'test_query',
                                                          'state' => 'test_state',
@@ -57,7 +57,7 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
           Postgres::Vacuum::Jobs::MonitorJob::LONG_TRANSACTIONS,
           database_name: 'postgres_vacuum_monitor_test',
           start_time: 'test_xact_start',
-          running_time: 'test_seconds',
+          running_time: 60,
           application_name: 'test_application_name',
           most_recent_query: 'test_query',
           state: 'test_state',
