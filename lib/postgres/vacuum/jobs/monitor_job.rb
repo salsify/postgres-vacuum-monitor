@@ -18,7 +18,7 @@ module Postgres
                 LONG_TRANSACTIONS,
                 database_name: name,
                 start_time: row['xact_start'],
-                running_time: row['seconds'],
+                running_time: row['seconds'].to_i,
                 application_name: row['application_name'],
                 most_recent_query: row['query'],
                 state: row['state'],
