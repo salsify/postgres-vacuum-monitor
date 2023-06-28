@@ -10,6 +10,9 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
   let(:job) { Postgres::Vacuum::Jobs::MonitorJob.new }
 
   describe "#perform" do
+    before do
+      allow(TestMetricsReporter).to receive(:report_event)
+    end
 
     context "without a mocked connection" do
       before do
@@ -19,6 +22,21 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
 
       it "executes all the queries" do
         expect(job.perform).to eq true
+
+        expect(TestMetricsReporter).to have_received(:report_event).with(
+          Postgres::Vacuum::Jobs::MonitorJob::CONNECTION_STATE,
+          database_name: instance_of(String),
+          connection_count: instance_of(Integer),
+          state: anything
+        ).exactly(3).times # once for each state: nil, active, and idle
+
+        expect(TestMetricsReporter).to have_received(:report_event).with(
+          Postgres::Vacuum::Jobs::MonitorJob::CONNECTION_IDLE_TIME,
+          database_name: instance_of(String),
+          max: instance_of(Integer),
+          median: instance_of(Integer),
+          percentile_90: instance_of(Integer)
+        ).once
       end
     end
 
@@ -33,7 +51,6 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
 
         allow(Postgres::Vacuum::Monitor.configuration).to receive(:monitor_reporter_class_name)
                                                             .and_return(TestMetricsReporter.name)
-        allow(TestMetricsReporter).to receive(:report_event)
       end
 
       it "reports long running transaction events" do
@@ -41,7 +58,7 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
                                                    .and_return(
                                                      [
                                                        'xact_start' => 'test_xact_start',
-                                                       'seconds' => 'test_seconds',
+                                                       'seconds' => 60.00,
                                                        'application_name' => 'test_application_name',
                                                        'query' => 'test_query',
                                                          'state' => 'test_state',
@@ -57,7 +74,7 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
           Postgres::Vacuum::Jobs::MonitorJob::LONG_TRANSACTIONS,
           database_name: 'postgres_vacuum_monitor_test',
           start_time: 'test_xact_start',
-          running_time: 'test_seconds',
+          running_time: 60,
           application_name: 'test_application_name',
           most_recent_query: 'test_query',
           state: 'test_state',
@@ -141,9 +158,9 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
         expect(TestMetricsReporter).to have_received(:report_event).with(
           Postgres::Vacuum::Jobs::MonitorJob::CONNECTION_IDLE_TIME,
           database_name: 'postgres_vacuum_monitor_test',
-          max: 3.1,
-          median: 222.22,
-          percentile_90: 9323.323
+          max: 3,
+          median: 222,
+          percentile_90: 9323
         )
       end
 
