@@ -65,9 +65,9 @@ module Postgres
               reporter_class.report_event(
                 CONNECTION_IDLE_TIME,
                 database_name: name,
-                max: row['max'],
-                median: row['median'],
-                percentile_90: row['percentile_90']
+                max: row['max'].to_i,
+                median: row['median'].to_i,
+                percentile_90: row['percentile_90'].to_i
               )
             end
           end
