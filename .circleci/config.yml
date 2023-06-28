@@ -1,8 +1,15 @@
+# YAML Anchors
+aws-auth: &aws-auth
+  aws_auth:
+    aws_access_key_id: $ECR_AWS_ACCESS_KEY_ID
+    aws_secret_access_key: $ECR_AWS_SECRET_ACCESS_KEY
+
 version: 2.1
 jobs:
   lint:
     docker:
-      - image: salsify/ruby_ci:2.7.7
+      - image: $SALSIFY_ECR_REPO/ruby_ci:2.7.7
+        <<: *aws-auth
     working_directory: ~/postgres-vacuum-monitor
     steps:
       - checkout
@@ -34,7 +41,8 @@ jobs:
       postgres_version:
         type: string
     docker:
-      - image: salsify/ruby_ci:<< parameters.ruby_version >>
+      - image: $SALSIFY_ECR_REPO/ruby_ci:<< parameters.ruby_version >>
+        <<: *aws-auth
       - image: cimg/postgres:<< parameters.postgres_version >>
         environment:
           POSTGRES_USER: "circleci"
@@ -81,16 +89,16 @@ jobs:
 workflows:
   build:
     jobs:
-      - lint
+      - lint:
+          context: Salsify
       - test:
+          context: Salsify
           matrix:
             parameters:
               gemfile:
-                - "gemfiles/activerecord_6_0.gemfile"
                 - "gemfiles/activerecord_6_1.gemfile"
                 - "gemfiles/activerecord_7_0.gemfile"
               ruby_version:
-                - "2.7.7"
                 - "3.0.5"
                 - "3.1.3"
                 - "3.2.0"
