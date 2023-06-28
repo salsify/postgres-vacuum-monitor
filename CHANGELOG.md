@@ -1,7 +1,7 @@
 # postgres-vacuum-monitor
 
 ## v0.13.1
-- Fix long running transaction duration reporting in Postgres 14
+- Fix epoch reporting in Postgres 14
 
 ## v0.13.0
 - Add support for ruby 3.2 and Rails 7.0
