@@ -40,6 +40,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec_junit_formatter'
   spec.add_development_dependency 'salsify_rubocop', '~> 1.42.1'
 
-  spec.add_dependency 'activerecord', '>= 6.0', '< 7.1'
+  spec.add_dependency 'activerecord', '>= 6.1', '< 7.1'
   spec.add_dependency 'pg', '>= 0.18', '< 2.0'
 end
