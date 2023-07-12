@@ -1,5 +1,8 @@
 # postgres-vacuum-monitor
 
+## v0.14.1
+- Requires activerecord >= 6.1
+
 ## v0.14.0
 - Drop support for ruby < 3.0 and Rails < 6.1
 
