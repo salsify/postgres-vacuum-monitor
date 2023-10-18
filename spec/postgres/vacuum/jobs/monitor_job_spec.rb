@@ -175,12 +175,8 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
           let(:name_change_db_config) { { name: 'my db' } }
 
           before do
-            if Postgres::Vacuum::Compatibility.pre_rails_6_1?
-              allow(SecondPool.connection_pool.spec).to receive(:config).and_return(name_change_db_config)
-            else
-              allow(SecondPool.connection_pool.db_config).to receive(:configuration_hash)
-                                                               .and_return(name_change_db_config)
-            end
+            allow(SecondPool.connection_pool.db_config).to receive(:configuration_hash)
+                                                             .and_return(name_change_db_config)
           end
 
           it "reports twice for two databases" do

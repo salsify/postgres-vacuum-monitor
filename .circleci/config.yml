@@ -38,12 +38,10 @@ jobs:
         type: string
       ruby_version:
         type: string
-      postgres_version:
-        type: string
     docker:
       - image: $SALSIFY_ECR_REPO/ruby_ci:<< parameters.ruby_version >>
         <<: *aws-auth
-      - image: cimg/postgres:<< parameters.postgres_version >>
+      - image: cimg/postgres:14.7
         environment:
           POSTGRES_USER: "circleci"
           POSTGRES_DB: "circle_test"
@@ -98,10 +96,8 @@ workflows:
               gemfile:
                 - "gemfiles/activerecord_6_1.gemfile"
                 - "gemfiles/activerecord_7_0.gemfile"
+                - "gemfiles/activerecord_7_1.gemfile"
               ruby_version:
                 - "3.0.6"
                 - "3.1.4"
                 - "3.2.2"
-              postgres_version:
-                - "12.9"
-                - "14.7"

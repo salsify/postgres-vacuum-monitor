@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'active_record'
-require 'postgres/vacuum/compatibility'
 require 'postgres/vacuum/configuration'
 require 'postgres/vacuum/monitor/version'
 require 'postgres/vacuum/monitor/query'

@@ -1,5 +1,8 @@
 # postgres-vacuum-monitor
 
+## v0.15.0
+- Add support for Rails 7.1
+
 ## v0.14.1
 - Requires activerecord >= 6.1
 
