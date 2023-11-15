@@ -1,5 +1,10 @@
 # postgres-vacuum-monitor
 
+## v0.16.0
+- Add `max_attempts` and `max_run_time` to `Postgres::Vacuum::Jobs::MonitorJob` to avoid backing up the queue. The
+  defaults are 1 attempt and 10 seconds, but they can be configured with `monitor_max_attempts` and
+  `monitor_max_run_time_seconds`, respectively.
+
 ## v0.15.0
 - Add support for Rails 7.1
 
