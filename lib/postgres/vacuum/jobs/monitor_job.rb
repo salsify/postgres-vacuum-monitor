@@ -11,6 +11,14 @@ module Postgres
         CONNECTION_STATE = 'ConnectionState'
         CONNECTION_IDLE_TIME = 'ConnectionIdleTime'
 
+        def max_run_time
+          Postgres::Vacuum::Monitor.configuration.monitor_max_run_time_seconds.seconds
+        end
+
+        def max_attempts
+          Postgres::Vacuum::Monitor.configuration.monitor_max_attempts
+        end
+
         def perform(*)
           with_each_db_name_and_connection do |name, connection|
             connection.execute(Postgres::Vacuum::Monitor::Query.long_running_transactions).each do |row|

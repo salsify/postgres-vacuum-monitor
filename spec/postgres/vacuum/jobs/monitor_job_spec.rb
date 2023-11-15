@@ -194,4 +194,40 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
       expect { job.reporter_class }.to raise_error(Postgres::Vacuum::Jobs::MonitorJob::ConfigurationError)
     end
   end
+
+  describe "#max_attempts" do
+    context "with default configuration" do
+      it "makes 1 attempt" do
+        expect(job.max_attempts).to eq(1)
+      end
+    end
+
+    context "with custom configuration" do
+      before do
+        allow(Postgres::Vacuum::Monitor.configuration).to receive(:monitor_max_attempts).and_return(3)
+      end
+
+      it "makes the configured number for attempts" do
+        expect(job.max_attempts).to eq(3)
+      end
+    end
+  end
+
+  describe "#max_run_time" do
+    context "with default configuration" do
+      it "times out after 10 seconds" do
+        expect(job.max_run_time).to eq(10.seconds)
+      end
+    end
+
+    context "with custom configuration" do
+      before do
+        allow(Postgres::Vacuum::Monitor.configuration).to receive(:monitor_max_run_time_seconds).and_return(60)
+      end
+
+      it "times out after the configured number of seconds" do
+        expect(job.max_run_time).to eq(60.seconds)
+      end
+    end
+  end
 end
