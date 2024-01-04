@@ -87,17 +87,18 @@ jobs:
 workflows:
   build:
     jobs:
-      - lint:
-          context: Salsify
-      - test:
-          context: Salsify
-          matrix:
-            parameters:
-              gemfile:
-                - "gemfiles/activerecord_6_1.gemfile"
-                - "gemfiles/activerecord_7_0.gemfile"
-                - "gemfiles/activerecord_7_1.gemfile"
-              ruby_version:
-                - "3.0.6"
-                - "3.1.4"
-                - "3.2.2"
+    - lint:
+        context: Salsify
+    - test:
+        context: Salsify
+        matrix:
+          parameters:
+            gemfile:
+            - gemfiles/activerecord_6_1.gemfile
+            - gemfiles/activerecord_7_0.gemfile
+            - gemfiles/activerecord_7_1.gemfile
+            ruby_version:
+            - 3.0.6
+            - 3.1.4
+            - 3.2.2
+            - 3.3.0
