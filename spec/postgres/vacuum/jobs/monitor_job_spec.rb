@@ -199,11 +199,23 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
       end
 
       describe "connection resetting" do
-        it "resets the pool on error" do
+        it "resets the pool on statement error" do
           pool = ActiveRecord::Base.connection_handler.connection_pools[0]
           allow(pool).to receive(:disconnect!)
 
           error = ActiveRecord::QueryCanceled.new
+          query = Postgres::Vacuum::Monitor::Query.connection_idle_time
+          allow(mock_connection).to receive(:execute).with(query).and_raise(error)
+
+          expect { job.perform }.to raise_error(error)
+          expect(pool).to have_received(:disconnect!)
+        end
+
+        it "resets the pool on connection timeout error" do
+          pool = ActiveRecord::Base.connection_handler.connection_pools[0]
+          allow(pool).to receive(:disconnect!)
+
+          error = ActiveRecord::ConnectionTimeoutError.new
           query = Postgres::Vacuum::Monitor::Query.connection_idle_time
           allow(mock_connection).to receive(:execute).with(query).and_raise(error)
 

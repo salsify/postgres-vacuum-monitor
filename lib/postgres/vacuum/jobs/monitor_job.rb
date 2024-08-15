@@ -114,7 +114,7 @@ module Postgres
 
           # We want to avoid hanging onto a bad connection that would cause all future
           # jobs to fail, so we eagerly clear the pool.
-          rescue ActiveRecord::StatementInvalid
+          rescue ActiveRecord::StatementInvalid, ActiveRecord::ConnectionTimeoutError
             connection_pool.disconnect!
             raise
           end
@@ -126,7 +126,8 @@ module Postgres
         end
 
         def set_statement_timeout(connection, timeout)
-          connection.execute("SET statement_timeout = '#{timeout}'")
+          query = ActiveRecord::Base.sanitize_sql(['SET statement_timeout = ?', timeout])
+          connection.execute(query)
         end
 
         def configured_timeout_seconds
