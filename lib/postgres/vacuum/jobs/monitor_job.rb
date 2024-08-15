@@ -112,6 +112,11 @@ module Postgres
               set_statement_timeout(connection, original_timeout)
             end
 
+          # We want to avoid hanging onto a bad connection that would cause all future
+          # jobs to fail, so we eagerly clear the pool.
+          rescue ActiveRecord::StatementInvalid
+            connection_pool.disconnect!
+            raise
           end
         end
 

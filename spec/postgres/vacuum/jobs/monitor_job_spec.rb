@@ -197,6 +197,20 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
           expect(mock_connection).to have_received(:execute).with("SET statement_timeout = '20m'").ordered
         end
       end
+
+      describe "connection resetting" do
+        it "resets the pool on error" do
+          pool = ActiveRecord::Base.connection_handler.connection_pools[0]
+          allow(pool).to receive(:disconnect!)
+
+          error = ActiveRecord::QueryCanceled.new
+          query = Postgres::Vacuum::Monitor::Query.connection_idle_time
+          allow(mock_connection).to receive(:execute).with(query).and_raise(error)
+
+          expect { job.perform }.to raise_error(error)
+          expect(pool).to have_received(:disconnect!)
+        end
+      end
     end
   end
 
