@@ -37,7 +37,7 @@ Postgres::Vacuum::Monitor.configure do |config|
   config.long_running_transaction_threshold_seconds = 10 * 60
   # Optionally change `max_attempts` of the monitor job (default 1)
   config.monitor_max_attempts = 3
-  # Optionally change `max_run_time` of the monitor job (default 10 seconds)
+  # Optionally change `max_run_time` of the monitor job (default 60 seconds)
   config.monitor_max_run_time_seconds = 5
 end
 ```

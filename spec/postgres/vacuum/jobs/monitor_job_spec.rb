@@ -216,7 +216,7 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
   describe "#max_run_time" do
     context "with default configuration" do
       it "times out after 10 seconds" do
-        expect(job.max_run_time).to eq(10.seconds)
+        expect(job.max_run_time).to eq(60.seconds)
       end
     end
 

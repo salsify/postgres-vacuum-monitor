@@ -4,7 +4,7 @@ module Postgres
   module Vacuum
     class Configuration
       DEFAULT_LONG_RUNNING_TRANSACTION_THRESHOLD_SECONDS = 5 * 60
-      DEFAULT_MONITOR_MAX_RUN_TIME_SECONDS = 10
+      DEFAULT_MONITOR_MAX_RUN_TIME_SECONDS = 60
       DEFAULT_MONITOR_MAX_ATTEMPTS = 1
 
       attr_accessor :monitor_reporter_class_name,
