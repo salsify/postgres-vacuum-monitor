@@ -1,5 +1,11 @@
 # postgres-vacuum-monitor
 
+## v0.17.0
+- Increased default `monitor_max_run_time_seconds` to 60 seconds.
+- Added `monitor_statement_timeout_seconds` (defaults to 10 seconds) to limit query runtime.
+- Eagerly clear connection pools when`ActiveRecord::StatementInvalid` is encounted to attempt
+  to clear bad connections.
+
 ## v0.16.0
 - Add `max_attempts` and `max_run_time` to `Postgres::Vacuum::Jobs::MonitorJob` to avoid backing up the queue. The
   defaults are 1 attempt and 10 seconds, but they can be configured with `monitor_max_attempts` and
