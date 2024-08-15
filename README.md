@@ -39,6 +39,8 @@ Postgres::Vacuum::Monitor.configure do |config|
   config.monitor_max_attempts = 3
   # Optionally change `max_run_time` of the monitor job (default 60 seconds)
   config.monitor_max_run_time_seconds = 5
+  # Optionally change the statement timeout of queries (default 10 seconds)
+  config.monitor_statement_timeout_seconds = 5
 end
 ```
 
