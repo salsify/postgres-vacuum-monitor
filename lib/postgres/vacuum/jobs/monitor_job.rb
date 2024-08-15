@@ -98,12 +98,40 @@ module Postgres
           databases = Set.new
           ActiveRecord::Base.connection_handler.connection_pools.map do |connection_pool|
             db_name = connection_pool.db_config.configuration_hash[:database]
+            next unless databases.add?(db_name)
 
-            # activerecord allocates a connection pool per call to establish_connection
-            # multiple pools might interact with the same database so we use the
-            # database name to dedup
-            connection_pool.with_connection { |conn| yield(db_name, conn) } if databases.add?(db_name)
+            # ActiveRecord allocates a connection pool per call to `.establish_connection`
+            # As a result, multiple pools might interact with the same database, so we use
+            # the database name to dedupe.
+            connection_pool.with_connection do |connection|
+              original_timeout = statement_timeout(connection)
+              set_statement_timeout(connection, "#{configured_timeout_seconds}s")
+
+              yield(db_name, connection)
+            ensure
+              set_statement_timeout(connection, original_timeout)
+            end
+
+          # We want to avoid hanging onto a bad connection that would cause all future
+          # jobs to fail, so we eagerly clear the pool.
+          rescue ActiveRecord::StatementInvalid, ActiveRecord::ConnectionTimeoutError
+            connection_pool.disconnect!
+            raise
           end
+        end
+
+        def statement_timeout(connection)
+          result = connection.execute('SHOW statement_timeout').first
+          result['statement_timeout'] if result.present?
+        end
+
+        def set_statement_timeout(connection, timeout)
+          query = ActiveRecord::Base.sanitize_sql(['SET statement_timeout = ?', timeout])
+          connection.execute(query)
+        end
+
+        def configured_timeout_seconds
+          Postgres::Vacuum::Monitor.configuration.monitor_statement_timeout_seconds
         end
 
         ConfigurationError = Class.new(StandardError)

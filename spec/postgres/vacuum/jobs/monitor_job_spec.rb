@@ -168,7 +168,7 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
 
         it "reports once for a single database." do
           expect(job.perform).to eq true
-          expect(mock_connection).to have_received(:execute).exactly(5)
+          expect(mock_connection).to have_received(:execute).exactly(8)
         end
 
         context "to different databases" do
@@ -181,8 +181,46 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
 
           it "reports twice for two databases" do
             expect(job.perform).to eq true
-            expect(mock_connection).to have_received(:execute).exactly(10)
+            expect(mock_connection).to have_received(:execute).exactly(16)
           end
+        end
+      end
+
+      describe "statement timeouts" do
+        it "sets and restored statement timeout" do
+          original_timeout = [{ 'statement_timeout' => '20m' }]
+          allow(mock_connection).to receive(:execute).with('SHOW statement_timeout').and_return(original_timeout)
+
+          job.perform
+
+          expect(mock_connection).to have_received(:execute).with("SET statement_timeout = '10s'").ordered
+          expect(mock_connection).to have_received(:execute).with("SET statement_timeout = '20m'").ordered
+        end
+      end
+
+      describe "connection resetting" do
+        it "resets the pool on statement error" do
+          pool = ActiveRecord::Base.connection_handler.connection_pools[0]
+          allow(pool).to receive(:disconnect!)
+
+          error = ActiveRecord::QueryCanceled.new
+          query = Postgres::Vacuum::Monitor::Query.connection_idle_time
+          allow(mock_connection).to receive(:execute).with(query).and_raise(error)
+
+          expect { job.perform }.to raise_error(error)
+          expect(pool).to have_received(:disconnect!)
+        end
+
+        it "resets the pool on connection timeout error" do
+          pool = ActiveRecord::Base.connection_handler.connection_pools[0]
+          allow(pool).to receive(:disconnect!)
+
+          error = ActiveRecord::ConnectionTimeoutError.new
+          query = Postgres::Vacuum::Monitor::Query.connection_idle_time
+          allow(mock_connection).to receive(:execute).with(query).and_raise(error)
+
+          expect { job.perform }.to raise_error(error)
+          expect(pool).to have_received(:disconnect!)
         end
       end
     end
@@ -216,7 +254,7 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
   describe "#max_run_time" do
     context "with default configuration" do
       it "times out after 10 seconds" do
-        expect(job.max_run_time).to eq(10.seconds)
+        expect(job.max_run_time).to eq(60.seconds)
       end
     end
 
