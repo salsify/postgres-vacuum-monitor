@@ -44,6 +44,8 @@ describe Postgres::Vacuum::Jobs::MonitorJob do
       let(:mock_connection) { double }
 
       before do
+        allow(mock_connection).to receive(:cast_bound_value) { "'#{_1}'" }
+        allow(mock_connection).to receive(:quote) { _1 }
         allow(mock_connection).to receive(:execute).and_return([])
         ActiveRecord::Base.connection_handler.connection_pools.each do |pool|
           allow(pool).to receive(:with_connection).and_yield(mock_connection)

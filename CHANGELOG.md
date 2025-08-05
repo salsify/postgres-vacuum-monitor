@@ -1,5 +1,10 @@
 # postgres-vacuum-monitor
 
+## v0.18.0
+- Add support for Rails 7.2 and 8.0.
+- Drop support for Rails 6.1 and 7.0.
+- Drop support for Ruby 3.0 and 3.1.
+
 ## v0.17.0
 - Increased default `monitor_max_run_time_seconds` to 60 seconds.
 - Added `monitor_statement_timeout_seconds` (defaults to 10 seconds) to limit query runtime.
