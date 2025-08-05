@@ -8,15 +8,15 @@ version: 2.1
 jobs:
   lint:
     docker:
-      - image: $SALSIFY_ECR_REPO/ruby_ci:3.0.6
+      - image: $SALSIFY_ECR_REPO/ruby_ci:3.2.8
         <<: *aws-auth
     working_directory: ~/postgres-vacuum-monitor
     steps:
       - checkout
       - restore_cache:
           keys:
-            - v1-gems-ruby-3.0.6-{{ checksum "postgres-vacuum-monitor.gemspec" }}-{{ checksum "Gemfile" }}
-            - v1-gems-ruby-3.0.6-
+            - v1-gems-ruby-3.2.8-{{ checksum "postgres-vacuum-monitor.gemspec" }}-{{ checksum "Gemfile" }}
+            - v1-gems-ruby-3.2.8-
       - run:
           name: Install Gems
           command: |
@@ -25,7 +25,7 @@ jobs:
               bundle clean
             fi
       - save_cache:
-          key: v1-gems-ruby-3.0.6-{{ checksum "postgres-vacuum-monitor.gemspec" }}-{{ checksum "Gemfile" }}
+          key: v1-gems-ruby-3.2.8-{{ checksum "postgres-vacuum-monitor.gemspec" }}-{{ checksum "Gemfile" }}
           paths:
             - "vendor/bundle"
             - "gemfiles/vendor/bundle"
@@ -94,11 +94,10 @@ workflows:
           matrix:
             parameters:
               gemfile:
-                - gemfiles/activerecord_6_1.gemfile
-                - gemfiles/activerecord_7_0.gemfile
                 - gemfiles/activerecord_7_1.gemfile
+                - gemfiles/activerecord_7_2.gemfile
+                - gemfiles/activerecord_8_0.gemfile
               ruby_version:
-                - 3.0.6
-                - 3.1.4
-                - 3.2.2
-                - 3.3.0
+                - 3.2.8
+                - 3.3.8
+                - 3.4.5
