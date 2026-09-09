@@ -8,24 +8,25 @@ version: 2.1
 jobs:
   lint:
     docker:
-      - image: $SALSIFY_ECR_REPO/ruby_ci:3.2.8
+      - image: $SALSIFY_ECR_REPO/ruby-ci-3_3_11
         <<: *aws-auth
     working_directory: ~/postgres-vacuum-monitor
     steps:
       - checkout
       - restore_cache:
           keys:
-            - v1-gems-ruby-3.2.8-{{ checksum "postgres-vacuum-monitor.gemspec" }}-{{ checksum "Gemfile" }}
-            - v1-gems-ruby-3.2.8-
+            - v1-gems-ruby-3_3_11-{{ checksum "postgres-vacuum-monitor.gemspec" }}-{{ checksum "Gemfile" }}
+            - v1-gems-ruby-3_3_11-
       - run:
           name: Install Gems
           command: |
-            if ! bundle check --path=vendor/bundle; then
-              bundle install --path=vendor/bundle --jobs=4 --retry=3
+            bundle config set path 'vendor/bundle'
+            if ! bundle check; then
+              bundle install --jobs=4 --retry=3
               bundle clean
             fi
       - save_cache:
-          key: v1-gems-ruby-3.2.8-{{ checksum "postgres-vacuum-monitor.gemspec" }}-{{ checksum "Gemfile" }}
+          key: v1-gems-ruby-3_3_11-{{ checksum "postgres-vacuum-monitor.gemspec" }}-{{ checksum "Gemfile" }}
           paths:
             - "vendor/bundle"
             - "gemfiles/vendor/bundle"
@@ -39,7 +40,7 @@ jobs:
       ruby_version:
         type: string
     docker:
-      - image: $SALSIFY_ECR_REPO/ruby_ci:<< parameters.ruby_version >>
+      - image: $SALSIFY_ECR_REPO/ruby-ci-<< parameters.ruby_version >>
         <<: *aws-auth
       - image: cimg/postgres:14.7
         environment:
@@ -63,8 +64,9 @@ jobs:
       - run:
           name: Install Gems
           command: |
-            if ! bundle check --path=vendor/bundle; then
-              bundle install --path=vendor/bundle --jobs=4 --retry=3
+            bundle config set path 'vendor/bundle'
+            if ! bundle check; then
+              bundle install --jobs=4 --retry=3
               bundle clean
             fi
       - save_cache:
@@ -94,10 +96,9 @@ workflows:
           matrix:
             parameters:
               gemfile:
-                - gemfiles/activerecord_7_1.gemfile
-                - gemfiles/activerecord_7_2.gemfile
                 - gemfiles/activerecord_8_0.gemfile
+                - gemfiles/activerecord_8_1.gemfile
               ruby_version:
-                - 3.2.8
-                - 3.3.8
-                - 3.4.5
+                - "3_3_11"
+                - "3_4_9"
+                - "4_0_6"

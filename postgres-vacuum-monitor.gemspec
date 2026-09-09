@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.required_ruby_version = '>= 3.2'
+  spec.required_ruby_version = '>= 3.3'
 
   spec.add_development_dependency 'appraisal'
   spec.add_development_dependency 'bundler'
@@ -40,6 +40,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec_junit_formatter'
   spec.add_development_dependency 'salsify_rubocop', '~> 1.42.1'
 
-  spec.add_dependency 'activerecord', '>= 7.1', '< 8.1'
+  spec.add_dependency 'activerecord', '>= 8.0', '< 8.2'
   spec.add_dependency 'pg', '>= 0.18', '< 2.0'
 end

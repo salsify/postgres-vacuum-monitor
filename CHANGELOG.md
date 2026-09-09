@@ -1,5 +1,10 @@
 # postgres-vacuum-monitor
 
+## v0.19.0
+- Add support for Rails 8.1 and Ruby 4.0.
+- Drop support for Rails 7.1 and 7.2.
+- Drop support for Ruby 3.2.
+
 ## v0.18.0
 - Add support for Rails 7.2 and 8.0.
 - Drop support for Rails 6.1 and 7.0.
